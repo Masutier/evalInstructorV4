@@ -1,6 +1,6 @@
 venv
 
-dbs/evalins.json
+/dbs/evalins.json
 
 __pycache__/
 *.py[cod]
