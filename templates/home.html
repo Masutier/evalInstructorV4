@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="contenedor">    
-    <div class="col-9 mx-auto mt-5 c">
+    <div class="col-9 mx-auto mt-5 mb-5 c">
         <h1>Valoración de instructores por parte de los aprendices</h1>
         <div class="col-11 mx-auto">
             <p>La aplicación tiene como finalidad permitirle a los aprendices dar una valoración respecto a como creen que fue el desempeño de los instructores que estuvieron acompañandolos por un trimestre academico.</p>
@@ -21,13 +21,17 @@
         </div>
     </div>
 </div>
-<div class="mx-auto mt-4 c">
-    <p>¡INGRESE AQUÍ!</p>
-</div>
-<div class="flecha c">
-    <img class="flecha" src="{{ url_for('static', filename='img/img/flecha.png') }}" alt="">
-</div>
-<div class="col-12 mx-auto mt-5 mb-5">
+
+<div class="row col-11 mx-auto">
+    <div class="col-5 mx-auto mt-5">
+        <div class="mx-auto mt-4 c">
+            <h3>¡INGRESE AQUÍ!</h3>
+        </div>
+        <div class="flecha c">
+            <img class="flecha" src="{{ url_for('static', filename='img/img/to_the_right.png') }}" alt="">
+        </div>
+    </div>
+
     <div class="col-lg-7 mx-auto p-5 backs">
         <div class="col-md-10 mx-auto c ">
             <h1>Portal de Acceso</h1>

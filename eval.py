@@ -56,10 +56,11 @@ def home():
     except Exception as e:
         # If dates aren't set, redirect to activation
         session['grupo'] = "Administrador"
-        flash('Las fechas de evaluación no están configuradas', 'warning')
+        flash('El aplicativo aún no está configurado', 'warning')
         return redirect(url_for('load_activation'))
 
     if request.method == "POST":
+        # get data from home form
         docid = request.form.get('docid')
         password = request.form.get('password')
         
@@ -184,7 +185,7 @@ def activation():
             try:
                 mail.send(msg)
             except Exception as e:
-                flash(f'Error al procesar el archivo: {str(e)}')
+                flash(f'Error al procesar el archivo "LoadActivation": {str(e)}')
                 return redirect(url_for('home'))
 
         flash('El aplicativo se activó exitosamente y los correos a las coordinaciones se enviaron', "info")
@@ -207,7 +208,7 @@ def logout():
 def loadings():
     try:
         if session['coordinador_grupo'] == "Coordinador":
-            docid = session['cedula']
+            docid = session['coordinador_cedula']
             sqlQuery = "SELECT * FROM Coordinadores WHERE NUMERO_DOCUMENTO =?"
             adition = (docid,)
             coordinador = call_db_one(sqlQuery, adition)
@@ -232,7 +233,7 @@ def load_instructores():
         instructorapp(filepath)
 
         flash('El registro de las listas de los instructores se realizó exitosamente.')
-        return redirect(url_for('home'))
+        return redirect(url_for('loadings'))
 
     return redirect('/')
 
@@ -251,12 +252,12 @@ def load_aprendices_many():
         
         if not allApren:
             flash('No se encontraron listados o algo salió mal. Revise que los listados estén en la carpeta correcta.')
-            return redirect(url_for('home'))
+            return redirect(url_for('loadings'))
 
         aprendizapp(allApren)
 
         flash('El registro de las listas de los aprendices se realizó exitosamente.')
-        return redirect(url_for('home'))
+        return redirect(url_for('loadings'))
 
     return redirect('/')
 
@@ -264,9 +265,9 @@ def load_aprendices_many():
 @app.route('/upload_photo', methods=['GET', 'POST'])
 def upload_photo():
     instructor = session
-    if request.method == 'POST':
+    if session and request.method == 'POST':
         file = request.files['PHOTO']
-        numero_de_documento = session['cedula']
+        numero_de_documento = session['instructor_cedula']
         
         if file.filename == '':
             flash('No selected file')
@@ -276,14 +277,15 @@ def upload_photo():
             try:
                 # Get instructor
                 sqlInstr = "SELECT * FROM Instructores WHERE NUMERO_DOCUMENTO = ?"
-                instructor = call_db_one(sqlInstr, (numero_de_documento,))
+                instructor = call_db_one_dict(sqlInstr, (numero_de_documento,))
+                lastName = instructor["APELLIDOS"]
                 
                 if not instructor:
                     flash('El Instructor no se encontró en los registros.')
                     return redirect('/')
                 
                 # Save file
-                filename = secure_filename(f"{numero_de_documento}_{file.filename}")
+                filename = secure_filename(f"{lastName}_{file.filename}")
                 filepath = os.path.join(LOAD_PATH_PHOTO, filename)
                 os.makedirs(os.path.dirname(filepath), exist_ok=True)
                 file.save(filepath)
@@ -294,7 +296,7 @@ def upload_photo():
 
                 # Get fresh instructor
                 sqlInstr = "SELECT * FROM Instructores WHERE NUMERO_DOCUMENTO = ?"
-                instructor = call_db_one(sqlInstr, (numero_de_documento,))
+                instructor = call_db_one_dict(sqlInstr, (numero_de_documento,))
 
                 # LogOut
                 session.clear()

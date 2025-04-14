@@ -2,12 +2,24 @@
 {% block title %} {{title}} {% endblock %}
 {% block content %}
     
-<div class="col-12 mx-auto mt-4 mb-3">
-    <div class="col-9 mx-auto mb-5 p-5 c backs">
-        <h2>Aprendiz</h2>
-        <h1>{{ aprendiz[0]['APRENDIZ_NAME'] }} {{ aprendiz[0]['APRENDIZ_LAST'] }}</h1>
-        <h3>FICHA: {{ aprendiz[0]['FICHA'] }}</h3>
-        <h3>{{ aprendiz[0]['PROGFORMACION'] }}</h3>
+<div class="col-12 mx-auto mt-5 mb-3">
+
+    <div class="col-md-7 mx-auto mb-4 c"> 
+        <div class="card2 p-3">
+            <div class="card-body">
+                <h3>FICHA: {{ aprendiz[0]['FICHA'] }}</h3>
+                <h3>{{ aprendiz[0]['PROGFORMACION'] }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7 mx-auto mb-5 c"> 
+        <div class="card2 p-3">
+            <div class="card-body">
+                <h2>Aprendiz</h2>
+                <h1>{{ aprendiz[0]['APRENDIZ_NAME'] }} {{ aprendiz[0]['APRENDIZ_LAST'] }}</h1>
+            </div>
+        </div>
     </div>
 
     <div class="col-9 mx-auto c">
