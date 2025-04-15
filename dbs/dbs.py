@@ -105,14 +105,6 @@ def update_db(sqlQuery, data1, data2):
     conn.close()
 
 
-def update_penta_db(sqlQuery, data1, data2, data3, data4):
-    conn = sql3.connect(os.path.join(BASE_DIR, "staff.db"))
-    cur = conn.cursor()
-    cur.execute(sqlQuery, (data1, data2, data3, data4))
-    conn.commit()
-    conn.close()
-
-
 def updateInforme(sqlQuery):
     conn = sql3.connect(os.path.join(BASE_DIR, "staff.db"))
     cur = conn.cursor()

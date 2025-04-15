@@ -19,6 +19,7 @@ def create_instructor_session(dbData):
 
 def create_aprendiz_session(dbData):
     session['aprendiz_grupo'] = dbData[12]
+    session['ficha'] = dbData[9]
     session['aprendiz_name'] = dbData[3]
     session['aprendiz_lastname'] = dbData[4]
     session['aprendiz_cedula'] = dbData[6]

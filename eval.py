@@ -15,7 +15,6 @@ from start.startapp import startapp
 from start.instructorapp import instructorapp
 from start.aprendizapp import joinAprenticeFiles, aprendizapp
 from start.email_templates import coordination_email_template, instructor_email_template
-from evalua.evalua import creaToTest
 
 with open("dbs/evalins.json") as config_file:
     config = json.load(config_file)
@@ -61,21 +60,21 @@ def home():
 
     if request.method == "POST":
         # get data from home form
-        docid = request.form.get('docid')
+        email = request.form.get('email') # docid = .. ('docid') para usar la cc como nombre de usuario. (see template "home")
         password = request.form.get('password')
         
         passwordHash = hashlib.md5(password.encode()).hexdigest()
         
         # Check user types in sequence
         user_types = [
-            ('Coordinadores', 'Coordinador', create_coordinador_session),
-            ('Instructores', 'Instructor', create_instructor_session),
-            ('Aprendices', 'Aprendiz', create_aprendiz_session)
+            ('Coordinadores', 'Coordinador'),
+            ('Instructores', 'Instructor'),
+            ('Aprendices', 'Aprendiz')
         ]
         
-        for table, role, session_creator in user_types:
+        for table, role in user_types:
             try:
-                dbData = call_db_one(f"SELECT * FROM {table} WHERE NUMERO_DOCUMENTO = ?", (docid,))
+                dbData = call_db_one(f"SELECT * FROM {table} WHERE EMAIL = ?", (email,)) # WHERE NUMERO_DOCUMENTO .. (docid) para usar la cc como nombre de usuario.
                 if role == 'Coordinador':
                     PASSWORD = dbData[11]
                     GRUPO = dbData[9]
@@ -313,40 +312,40 @@ def upload_photo():
 
 @app.route('/create_data_testing')
 def create_data_testing():
+
+    aprid = session['aprendiz_cedula']
+    ficha = session['ficha']
+
     try:
-        if session['aprendiz_grupo'] == "Aprendiz":
-            aprid = session['aprendiz_cedula']
-            apSqlQuery = "SELECT * FROM Aprendices WHERE NUMERO_DOCUMENTO =?"
-            adition = (aprid,)
-            aprendiz = call_db_one_dict(apSqlQuery, adition)
+        apSqlQuery = "SELECT * FROM ToTest WHERE DOCAPRENDIZ =?"
+        listToTest = call_db_all_dict(apSqlQuery, (aprid,))
 
-            ficha = aprendiz['FICHAS']
-            session['ficha'] = ficha
-
+        if listToTest:
+            return redirect(url_for('aprendiz'))
+        else:
+            instructores_to_test = []
             inSqlQuery = "SELECT * FROM Instructores WHERE FICHAS =?"
             adition = (ficha,)
             instructores = call_db_all_dict(inSqlQuery, adition)
-
-            try:
-                for instructor in instructores:
-                    toTestQuery = "SELECT * FROM ToTest WHERE DOCAPRENDIZ =? AND DOCINSTRUCTOR =?"
-                    add1 = aprendiz['NUMERO_DOCUMENTO']
-                    add2 = instructor['NUMERO_DOCUMENTO']
-                    toTest = call_db_two_all_dict(toTestQuery, add1, add2)
-
-                    if toTest:
-                        return redirect(url_for('aprendiz'))
-                    else:
-                        creaToTest(ficha, aprendiz, instructores)
-                        return redirect(url_for('aprendiz'))
-            except:
-                creaToTest(ficha, aprendiz, instructores)
-                return redirect(url_for('aprendiz'))
+            
+            for instructor in instructores:
+                data = {
+                    "FICHA": ficha,
+                    "PROGFORMACION": instructor['PROGRAMA_DE_FORMACION'],
+                    "DOCAPRENDIZ": aprid,
+                    "APRENDIZ_NAME": session['aprendiz_name'],
+                    "APRENDIZ_LAST": session['aprendiz_lastname'],
+                    "DOCINSTRUCTOR": instructor['NUMERO_DOCUMENTO'],
+                    "INSTRUCTOR_NAME": instructor['NOMBRES'],
+                    "INSTRUCTOR_LAST": instructor['APELLIDOS'], 
+                }
+                instructores_to_test.append(data)
+            instructores_to_test = pd.DataFrame(instructores_to_test)
+            save_response(instructores_to_test, 'ToTest')
+            return redirect(url_for('aprendiz'))
 
     except Exception as e:
-        session.clear()
-        flash("No tiene autorización para entrar")
-        flash(f'Error al procesar el archivo: {str(e)}')
+        flash(f'Algo salio mal, Intentelo de nuevo!": {str(e)}')
         return redirect(url_for('home'))
     
 
@@ -383,8 +382,8 @@ def aprendiz():
             aprendiz = call_db_one_dict(apSqlQuery, (aprid,))
             email = aprendiz['EMAIL']
 
-            sqlQuery = "UPDATE Aprendices SET NO_HABILITADO =?, EMAIL =?, PASSWORD =? WHERE NUMERO_DOCUMENTO =?"
-            update_penta_db(sqlQuery, email, "NA", "NA", aprid)
+            sqlQuery = "UPDATE Aprendices SET PASSWORD =? WHERE NUMERO_DOCUMENTO =?"
+            update_db(sqlQuery, "NA", aprid)
             session.clear()
 
             flash(f"Ya evaluó a todos los instructores. Gracias por su colaboración.")
@@ -409,12 +408,16 @@ def questionary(pk):
 @app.route('/save_answers', methods=['GET', 'POST'])
 def save_answers():
     if request.method == "POST":
+        # Get Aprentice data from session
         aprid = session['aprendiz_cedula']
+        # Get Instructor data from session
         insid = request.form.get('instructor')
 
+        # Call db ToTest to select Instructor in question for verification and data
         toTestQuery = "SELECT * FROM ToTest WHERE DOCAPRENDIZ =? AND DOCINSTRUCTOR =?"
         toTest = call_db_two_all_dict(toTestQuery, aprid, insid)
 
+        # Get answers from form
         respuestas = request.form
         respuestas_data = {
             "FICHA": toTest['FICHA'],
@@ -438,12 +441,15 @@ def save_answers():
             "P12": respuestas.get('12'),
         }
 
+        # Convert to DataFrame and save to db
         evalInstr = pd.DataFrame([respuestas_data])
+        print(evalInstr)
         save_response(evalInstr, "Informe")
 
         INSTRUCTOR_NAME = toTest['INSTRUCTOR_NAME']
         INSTRUCTOR_LAST = toTest['INSTRUCTOR_LAST']
-       
+
+        # Delete Instructor from ToTest db
         toTestQuery = "DELETE FROM ToTest WHERE DOCAPRENDIZ =? AND DOCINSTRUCTOR =?"
         toTest = delete_two_db(toTestQuery, aprid, insid)
 

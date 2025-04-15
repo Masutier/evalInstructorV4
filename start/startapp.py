@@ -28,7 +28,7 @@ def startapp(filepath):
         centroFormacion = row['CENTRO_DE_FORMACION']
         dfcoord['FECHA_DE_UPLOAD'] = datetime.today().strftime('%m/%d/%Y %H:%M:%S')
 
-        # Extract the last 5 digits from hash for password 
+        # Extract the last 5 digits to hash it for use as password 
         string = str(row['NUMERO_DOCUMENTO'])
         passcode = string[-5:]
         dfcoord.at[i, 'PASSWORD'] = hashlib.md5(passcode.encode()).hexdigest()
