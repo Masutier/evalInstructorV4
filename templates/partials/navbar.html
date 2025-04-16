@@ -13,22 +13,22 @@
             </div>
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item"><a class="nav-link" aria-current="page" href="{{ url_for('home') }}">Principal</a></li>
+                    <li class="nav-item"><a class="nav-link" aria-current="page" href="{{ url_for('home') }}">Página Principal</a></li>
                     <li class="nav-item"><a class="nav-link" aria-current="page" href="{{ url_for('about') }}">Equipo de Desarrollo</a></li>
 
                     {% if session.grupo == "Administrador" %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('load_activation') }}">Activar el Aplicativo</a></li>
                         <li class="nav-item"><a class="nav-link" href="">Administración</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">OUT</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">SALIR</a></li>
                     {% elif session.coordinador_grupo == "Coordinador" %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('loadings') }}">Subir Listados</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">OUT</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">SALIR</a></li>
                     {% elif session.instructor_grupo == "Instructor" %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('upload_photo') }}">Subir Foto Instructor</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">OUT</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">SALIR</a></li>
                     {% elif session.aprendiz_grupo == "Aprendiz" %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('aprendiz') }}">Aprendiz</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">OUT</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">SALIR</a></li>
                     {% endif %}
                 </ul>
             </div>

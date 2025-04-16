@@ -62,7 +62,6 @@ def home():
         # get data from home form
         email = request.form.get('email') # docid = .. ('docid') para usar la cc como nombre de usuario. (see template "home")
         password = request.form.get('password')
-        
         passwordHash = hashlib.md5(password.encode()).hexdigest()
         
         # Check user types in sequence
@@ -75,6 +74,7 @@ def home():
         for table, role in user_types:
             try:
                 dbData = call_db_one(f"SELECT * FROM {table} WHERE EMAIL = ?", (email,)) # WHERE NUMERO_DOCUMENTO .. (docid) para usar la cc como nombre de usuario.
+                print('11111')
                 if role == 'Coordinador':
                     PASSWORD = dbData[11]
                     GRUPO = dbData[9]
@@ -97,23 +97,23 @@ def home():
                         PASSWORD == "NA"
                         estado = dbData[8]
                         if estado == "EN FORMACION":
-                            flash(f'El Aprendiz parece que ya calificó a todos sus instructores.', 'danger')
+                            flash(f'El Aprendiz ya calificó a todos sus instructores.', 'danger')
                             return redirect(url_for('home'))
                         else:
                             flash(f'El aprendiz no está habilitado para calificar instructores. Su estado es {estado}', 'danger')
                             return redirect(url_for('home'))
-  
+
             except Exception as e:
                 # Log the error for debugging
                 app.logger.error(f"Error checking {table}: {str(e)}")
                 continue
-        
+
         # If no user found
         session.clear()
         flash('Credenciales incorrectas o usuario no encontrado', 'danger')
         return redirect(url_for('home'))
 
-    # GET request
+    # Render Home
     return render_template("home.html", start_date=start_date)
 
 

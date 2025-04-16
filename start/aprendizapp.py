@@ -51,7 +51,6 @@ def aprendizapp(allApren):
             mask = dfaprendiz.ESTADO == state
             dfaprendiz.loc[mask, 'NO_HABILITADO'] = dfaprendiz.loc[mask, 'EMAIL']
             dfaprendiz.loc[mask, 'PASSWORD'] = "NA"
-            dfaprendiz.loc[mask, 'EMAIL'] = "NA"
         
         dfaprendiz['FECHA_DE_UPLOAD'] = datetime.today().strftime('%m/%d/%Y %H:%M:%S')
         dfaprendiz['FECHA_DEL_REPORTE'] = datetime.now()
