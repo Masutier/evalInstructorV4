@@ -11,6 +11,10 @@ LOAD_PATH_COORD = (BASE_DIR + "/dbs/data/csvs/coordinaciones" )
 LOAD_PATH_INSTRUCTOR = (BASE_DIR + "/dbs/data/csvs/instructores" )
 LOAD_PATH_APRENTICE = (BASE_DIR + "/dbs/data/csvs/aprendices" )
 
+LOAD_PATH = (BASE_DIR + "/dbs/data/activate" )
+LOAD_PATH_APRENT = (BASE_DIR + "/dbs/data/activate/aprendices" )
+LOAD_PATH_PHOTO = (BASE_DIR + "/static/img/photos" )
+
 
 def semestre():
     """Determine the current trimester and return a directory suffix"""
@@ -126,8 +130,14 @@ def clean_data_aprendiz(dataframe):
     dataframe['FICHAS'] = dataframe['FICHAS'].astype(str).str.replace(".0", "")
     dataframe['NUMERO_DOCUMENTO'] = dataframe['NUMERO_DOCUMENTO'].astype(str)
     dataframe['ESTADO'] = dataframe['ESTADO'].fillna(value='ND')
-    
     return dataframe
+
+
+def crear_treeFiles_folder():
+    """Create folders for xlsx files"""
+    end_dir = os.path.join(LOAD_PATH_APRENT)
+    os.makedirs(end_dir, exist_ok=True)
+    return end_dir
 
 
 def create_report_folder():

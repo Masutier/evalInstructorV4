@@ -90,12 +90,17 @@ body {
 .imgban1{
     margin-top: 1rem;
     margin-bottom: 2rem;
-    width:75%;
+    width:50%;
 }
 .imgban2{
     margin-top: 1rem;
     margin-bottom: 2rem;
     width:30%;
+}
+.bshadow{
+    border: 1px solid #BFBFBF;
+    padding: 10px;
+    box-shadow: 10px 10px 5px #aaaaaa;
 }
 
 /* navbart */

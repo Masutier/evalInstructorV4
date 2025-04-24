@@ -1,0 +1,45 @@
+<!-- DEL BANNER -->
+
+<div class="col-12 mx-auto">
+    <div class="row">
+        <div class="col-lg-3 mx-auto c">
+            <img src="{{ url_for('static', filename='img/banner/COLOMBIA_POTENCIA_DE_LA_VIDA.png') }}" class="imgban1">
+        </div>
+        <div class="col-lg-3 mx-auto mt-4 c">
+            <h1>EVALUACION DE INSTRUCTORES</h1>
+        </div>
+        <div class="col-lg-3 mx-auto c">
+            <img src="{{ url_for('static', filename='img/icons/logoSena.png') }}" class="imgban2">
+        </div>
+    </div>
+</div>
+
+<div class="header" style="background-color: #015dca;padding-bottom: 0; height:30px;">
+    <p style="text-align: left;">
+        <img src="https://css.mintic.gov.co/mt/mintic/img/header_govco.png" alt="Gov Co" style="max-height: 20px;">
+    </p>
+    <p style="text-align: left;"><img src="{{ url_for('static', filename='img/icons/logoSena.png') }}"></p>
+</div>
+
+<script type="text/javascript">
+    let myDate = new Date();
+    let myDay = myDate.getDay();
+
+    // Array of days. 
+    let weekday = ['Sunday', 'Monday', 'Tuesday',
+        'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+    document.write("Today is : " + weekday[myDay]);
+    document.write("<br/>");
+
+    // get hour value. 
+    let hours = myDate.getHours();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    let minutes = myDate.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let myTime = hours + " " + ampm + " : " + minutes +
+        " : " + myDate.getMilliseconds();
+    document.write("\tCurrent time is : " + myTime); 
+</script>

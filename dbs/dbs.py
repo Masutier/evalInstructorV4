@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import sqlite3 as sql3
-from flask import flash, session
+from flask import flash, session, redirect
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -129,12 +129,14 @@ def to_test():
         APRENDIZ_LAST TEXT NOT NULL, 
         DOCINSTRUCTOR TEXT NOT NULL, 
         INSTRUCTOR_NAME TEXT NOT NULL, 
-        INSTRUCTOR_LAST TEXT NOT NULL, 
+        INSTRUCTOR_LAST TEXT NOT NULL,
+        PROGFORMACION TEXT NOT NULL
         )"""
     try:
         createTable(sqlQuery)
-    except:
-        pass
+    except Exception as e:
+        flash(f'Error al procesar los archivos: {str(e)}')
+        return redirect('/')
 
 
 def fullMixTable(request):

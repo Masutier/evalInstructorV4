@@ -15,6 +15,7 @@ from start.startapp import startapp
 from start.instructorapp import instructorapp
 from start.aprendizapp import joinAprenticeFiles, aprendizapp
 from start.email_templates import coordination_email_template, instructor_email_template
+from utils import crear_treeFiles_folder
 
 with open("dbs/evalins.json") as config_file:
     config = json.load(config_file)
@@ -74,7 +75,6 @@ def home():
         for table, role in user_types:
             try:
                 dbData = call_db_one(f"SELECT * FROM {table} WHERE EMAIL = ?", (email,)) # WHERE NUMERO_DOCUMENTO .. (docid) para usar la cc como nombre de usuario.
-                print('11111')
                 if role == 'Coordinador':
                     PASSWORD = dbData[11]
                     GRUPO = dbData[9]
@@ -144,6 +144,8 @@ def load_activation():
 def activation():
     if request.method == "POST":
         inFile = request.files['activationFileIn']
+        end_dir = crear_treeFiles_folder()
+
         if inFile and allowed_file(inFile.filename):
             filename = secure_filename(inFile.filename)
             filepath = os.path.join(LOAD_PATH, filename)
@@ -152,40 +154,40 @@ def activation():
         # Process the Excel file
         times = startapp(filepath)
 
-        # Send email to coordinations
-        coordinaciones = call_db("SELECT * FROM Coordinadores")
-        for coord in coordinaciones:
-            mail_data = {
-                'startdate': times['STARTDATE'],
-                'endCoordination': times['ENDCOORDATE'],
-                'endInstPhoto': times['ENDPHOTODATE'],
-                'endEvaluation': times['ENDEVALUACION'],
-                'REGIONAL': coord[0],
-                'CENTRO': coord[1],
-                'COORDINACION': coord[2],
-                'NOMBRES': coord[3],
-                'APELLIDOS': coord[4],
-                'TIPO_DOCUMENTO': coord[5],
-                'NUMERO_DOCUMENTO': coord[6],
-                'EMAIL': coord[7],
-                'HASH': coord[8],
-                'PASSWORD': coord[10],
-                'subject': "Activación del aplicativo para evaluar a los Instructores",
-            }
+        # # Send email to coordinations
+        # coordinaciones = call_db("SELECT * FROM Coordinadores")
+        # for coord in coordinaciones:
+        #     mail_data = {
+        #         'startdate': times['STARTDATE'],
+        #         'endCoordination': times['ENDCOORDATE'],
+        #         'endInstPhoto': times['ENDPHOTODATE'],
+        #         'endEvaluation': times['ENDEVALUACION'],
+        #         'REGIONAL': coord[0],
+        #         'CENTRO': coord[1],
+        #         'COORDINACION': coord[2],
+        #         'NOMBRES': coord[3],
+        #         'APELLIDOS': coord[4],
+        #         'TIPO_DOCUMENTO': coord[5],
+        #         'NUMERO_DOCUMENTO': coord[6],
+        #         'EMAIL': coord[7],
+        #         'HASH': coord[8],
+        #         'PASSWORD': coord[10],
+        #         'subject': "Activación del aplicativo para evaluar a los Instructores",
+        #     }
 
-            message = coordination_email_template(mail_data)
-            msg = Message(
-                subject=mail_data['subject'],
-                sender=config['EMAIL_USER'],
-                recipients=[mail_data['EMAIL']],
-            )
-            msg.body = message
+        #     message = coordination_email_template(mail_data)
+        #     msg = Message(
+        #         subject=mail_data['subject'],
+        #         sender=config['EMAIL_USER'],
+        #         recipients=[mail_data['EMAIL']],
+        #     )
+        #     msg.body = message
 
-            try:
-                mail.send(msg)
-            except Exception as e:
-                flash(f'Error al procesar el archivo "LoadActivation": {str(e)}')
-                return redirect(url_for('home'))
+        #     try:
+        #         mail.send(msg)
+        #     except Exception as e:
+        #         flash(f'Error al procesar el archivo "LoadActivation": {str(e)}')
+        #         return redirect(url_for('home'))
 
         flash('El aplicativo se activó exitosamente y los correos a las coordinaciones se enviaron', "info")
         return redirect(url_for('logout'))
@@ -443,7 +445,6 @@ def save_answers():
 
         # Convert to DataFrame and save to db
         evalInstr = pd.DataFrame([respuestas_data])
-        print(evalInstr)
         save_response(evalInstr, "Informe")
 
         INSTRUCTOR_NAME = toTest['INSTRUCTOR_NAME']

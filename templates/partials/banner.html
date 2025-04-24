@@ -1,13 +1,30 @@
-<div class="col-12 mx-auto">
+
+<div class="col-12 mx-auto bshadow">
     <div class="row">
-        <div class="col-lg-3 mx-auto c">
-            <img src="{{ url_for('static', filename='img/banner/COLOMBIA_POTENCIA_DE_LA_VIDA.png') }}" class="imgban1">
+        <div class="col-3 ps-5">
+            <img src="{{ url_for('static', filename='img/icons/logoSena.png') }}" class="imgban1">
         </div>
-        <div class="col-lg-3 mx-auto mt-4 c">
-            <h1>EVALUACION DE INSTRUCTORES</h1>
-        </div>
-        <div class="col-lg-3 mx-auto c">
-            <img src="{{ url_for('static', filename='img/icons/logoSena.png') }}" class="imgban2">
+        <div class="col-9 d-flex justify-content-end">
+            <p id="dateHere" class="pe-5"></p>
         </div>
     </div>
 </div>
+
+<script>
+    function theDate() {
+        // Get date in formats
+        let myDate = new Date();
+        let myDay = myDate.getDay();
+        let myToDay = String(myDate.getDate()).padStart(2, '0');
+        let myMonth = myDate.getMonth();
+        let myYear = myDate.getFullYear();
+
+        // Array of days. 
+        let weekday = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+        let month = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
+        // Display date. 
+        document.getElementById("dateHere").innerHTML = weekday[myDay] + ", " + myToDay + " de " + month[myMonth] + " " + myYear;
+    }
+    theDate();
+</script>

@@ -31,7 +31,7 @@ def instructorapp(filepath):
 
     # Add extra info
     dfinstructor['GRUPO'] = 'Instructor'
-    dfinstructor['PHOTO'] = 'static/img/person.jpg'
+    dfinstructor['PHOTO'] = 'person.jpg'
     dfinstructor['FECHA_DEL_REPORTE'] = datetime.now()
     dfinstructor.reset_index(drop=True, inplace=True)
 

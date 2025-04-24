@@ -2,7 +2,7 @@ import os
 import hashlib
 import pandas as pd
 from datetime import datetime, date, timedelta
-from dbs.dbs import save_db
+from dbs.dbs import save_db, to_test
 from utils import create_coordinator_folder, clean_data_coordinacion, clean_data_preguntas
 
 timing = datetime.today().date()
@@ -68,5 +68,8 @@ def startapp(filepath):
     save_db(dfcoord, "Coordinadores")
     save_db(dfquestion, "Preguntas")
     save_db(evalDates, "EvalFechas")
+
+    # create table ToTest
+    to_test()
 
     return times
