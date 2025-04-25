@@ -8,7 +8,7 @@
         <div class="card2 p-3">
             <div class="card-body">
                 <h4>FICHA: {{ testInstructor.0.0 }}</h4>
-                <h4>{{ testInstructor.0.1 }}</h4>
+                <h4>{{ testInstructor.0.7 }}</h4>
             </div>
         </div>
     </div>
@@ -20,8 +20,8 @@
             <div class="card2 h-100 p-3">
                 <div class="card-body">
                 <h5 class="card-title mb-2">INFORMACION DEL INSTRUCTOR</h5>
-                    <h6>Nombres: {{ testInstructor.0.6 }}</h6>
-                    <h6>Apellidos: {{ testInstructor.0.7 }}</h6>
+                    <h6>Nombres: {{ testInstructor.0.5 }}</h6>
+                    <h6>Apellidos: {{ testInstructor.0.6 }}</h6>
                 </div>
             </div>
         </div>
@@ -29,8 +29,8 @@
             <div class="card2 h-100 p-3">
                 <div class="card-body">
                 <h5 class="card-title mb-2">INFORMACION DEL APRENDIZ</h5>
-                    <h6>Nombres: {{ testInstructor.0.3 }}</h6>
-                    <h6>Apellidos: {{ testInstructor.0.4 }}</h6>
+                    <h6>Nombres: {{ testInstructor.0.2 }}</h6>
+                    <h6>Apellidos: {{ testInstructor.0.3 }}</h6>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
 
     <div class="card2 pb-5 mx-auto"> 
         <form name="mio"  action="{{url_for('save_answers')}}" method="POST">
-            <input type="hidden" id="instructor" name="instructor" value="{{ testInstructor.0.5 }}">
+            <input type="hidden" id="instructor" name="instructor" value="{{ testInstructor.0.4 }}">
 
             <div class="col-11 mx-auto p-3 ">
                 <br>

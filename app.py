@@ -52,7 +52,12 @@ def home():
     try:
         sqlQuery = """SELECT ENDEVALUACION FROM EvalFechas"""
         firstDate = call_db(sqlQuery)
-        start_date = datetime.strptime(firstDate[0][0], '%Y-%m-%d %H:%M:%S').date()
+        end_date = datetime.strptime(firstDate[0][0], '%Y-%m-%d %H:%M:%S').date()
+
+        present_time = datetime.today().date()
+        if present_time > end_date:
+            shot_down_app()
+
     except Exception as e:
         # If dates aren't set, redirect to activation
         session['grupo'] = "Administrador"
@@ -114,7 +119,7 @@ def home():
         return redirect(url_for('home'))
 
     # Render Home
-    return render_template("home.html", start_date=start_date)
+    return render_template("home.html", end_date=end_date)
 
 
 @app.route('/about')
