@@ -7,7 +7,7 @@ from flask import flash, session, redirect
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 today = str(datetime.today().date())
 today = today.replace("-", "_")
-db_name = "staff_" + str(today) + ".db"
+db_name = "staff.db"
 
 
 def createDB():
