@@ -6,6 +6,8 @@ dbs/evalins.json
 dbs/staff.db
 dbs/data
 dbs/data/*
+test.py
+
 static/img/photos
 
 __pycache__/

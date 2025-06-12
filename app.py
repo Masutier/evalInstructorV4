@@ -69,14 +69,14 @@ def home():
         email = request.form.get('email') # docid = .. ('docid') para usar la cc como nombre de usuario. (see template "home")
         password = request.form.get('password')
         passwordHash = hashlib.md5(password.encode()).hexdigest()
-        
+
         # Check user types in sequence
         user_types = [
             ('Coordinadores', 'Coordinador'),
             ('Instructores', 'Instructor'),
             ('Aprendices', 'Aprendiz')
         ]
-        
+
         for table, role in user_types:
             try:
                 dbData = call_db_one(f"SELECT * FROM {table} WHERE EMAIL = ?", (email,)) # WHERE NUMERO_DOCUMENTO .. (docid) para usar la cc como nombre de usuario.
@@ -101,7 +101,7 @@ def home():
                     else:
                         PASSWORD == "NA"
                         estado = dbData[8]
-                        if estado == "EN FORMACION":
+                        if estado == "Formacion":
                             flash(f'El Aprendiz ya calificó a todos sus instructores.', 'danger')
                             return redirect(url_for('home'))
                         else:
@@ -274,28 +274,28 @@ def upload_photo():
     if session and request.method == 'POST':
         file = request.files['PHOTO']
         numero_de_documento = session['instructor_cedula']
-        
+
         if file.filename == '':
             flash('No selected file')
             return redirect('/')
-            
+
         if file and numero_de_documento:
             try:
                 # Get instructor
                 sqlInstr = "SELECT * FROM Instructores WHERE NUMERO_DOCUMENTO = ?"
                 instructor = call_db_one_dict(sqlInstr, (numero_de_documento,))
                 lastName = instructor["APELLIDOS"]
-                
+
                 if not instructor:
                     flash('El Instructor no se encontró en los registros.')
                     return redirect('/')
-                
+
                 # Save file
                 filename = secure_filename(f"{lastName}_{file.filename}")
                 filepath = os.path.join(LOAD_PATH_PHOTO, filename)
                 os.makedirs(os.path.dirname(filepath), exist_ok=True)
                 file.save(filepath)
-                
+
                 # Update database
                 sqlQuery = "UPDATE Instructores SET PHOTO = ? WHERE NUMERO_DOCUMENTO = ?"
                 update_db(sqlQuery, (filename), (numero_de_documento))
@@ -309,11 +309,11 @@ def upload_photo():
 
                 flash('La foto se monto al sistema correctamente, Gracias por su pronta respuesta')
                 return render_template('loads/instructor.html', instructor=instructor)
-                
+
             except Exception as e:
                 flash(f'Error al procesar la foto: {str(e)}')
                 return redirect('/')
-    
+
     return render_template('loads/uploadPhoto.html', title="Load Foto", instructor=instructor)
 
 
@@ -334,7 +334,7 @@ def create_data_testing():
             inSqlQuery = "SELECT * FROM Instructores WHERE FICHAS =?"
             adition = (ficha,)
             instructores = call_db_all_dict(inSqlQuery, adition)
-            
+
             for instructor in instructores:
                 data = {
                     "FICHA": ficha,
@@ -354,7 +354,7 @@ def create_data_testing():
     except Exception as e:
         flash(f'Algo salio mal, Intentelo de nuevo!": {str(e)}')
         return redirect(url_for('home'))
-    
+
 
 @app.route('/aprendiz')
 def aprendiz():
@@ -364,7 +364,7 @@ def aprendiz():
     if session['aprendiz_grupo'] == "Aprendiz":
         ficha = session['ficha']
         aprid = session['aprendiz_cedula']
-        
+
         apSqlQuery = "SELECT * FROM ToTest WHERE DOCAPRENDIZ =?"
         listToTest = call_db_all_dict(apSqlQuery, (aprid,))
 
@@ -375,14 +375,14 @@ def aprendiz():
             for aprend in listToTest:
                 aprendiz.append({'FICHA':aprend['FICHA'], 'PROGFORMACION':aprend['PROGFORMACION'], 'DOCAPRENDIZ':aprend['DOCAPRENDIZ'], 'APRENDIZ_NAME':aprend['APRENDIZ_NAME'], 'APRENDIZ_LAST':aprend['APRENDIZ_LAST']})
                 break
-            
+
             for instru in listToTest:
                 for intructor in instructores:
                     if instru['DOCINSTRUCTOR'] == intructor['NUMERO_DOCUMENTO']:
                         instructoresTest.append(intructor)
 
             return render_template('evalua/aprendiz.html', title='Aprendiz', aprendiz=aprendiz, instructoresTest=instructoresTest)
-        
+
         else:
             aprid = session['aprendiz_cedula']
             apSqlQuery = "SELECT * FROM Aprendices WHERE NUMERO_DOCUMENTO =?"
@@ -464,4 +464,4 @@ def save_answers():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

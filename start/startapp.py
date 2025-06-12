@@ -6,9 +6,10 @@ from dbs.dbs import save_db, to_test
 from utils import create_coordinator_folder, clean_data_coordinacion, clean_data_preguntas
 
 timing = datetime.today().date()
-dateEndCoordination = 15
+dateEndCoordination = 1
 dateEndPhoto = dateEndCoordination + 7
 dateEndEvalua = dateEndCoordination + 7 + 15
+
 
 def startapp(filepath):
     # Process the Excel file

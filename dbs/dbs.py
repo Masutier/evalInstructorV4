@@ -172,6 +172,7 @@ def fullMixTable(request):
     
     try:
         createTable(sqlQuery)
+        
     except:
         flash(f'La Tabla "Informe" ya existe!')
         
